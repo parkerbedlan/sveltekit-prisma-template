@@ -12,7 +12,8 @@
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
 		"format": "prettier --write --plugin-search-dir=. .",
-		"migrate": "prisma migrate deploy"
+		"migrate": "prisma migrate deploy",
+		"vercel-build": "prisma generate && prisma migrate deploy && svelte-kit build"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.22.2",
