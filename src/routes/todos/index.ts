@@ -1,39 +1,20 @@
 import { api } from './_api';
 import type { RequestHandler } from './__types';
+import { prisma } from '$lib/db/prisma-client';
 
 export const get: RequestHandler = async ({ locals }) => {
-	// locals.userid comes from src/hooks.js
-	const response = await api('get', `todos/${locals.userid}`);
-
-	if (response.status === 404) {
-		// user hasn't created a todo list.
-		// start with an empty array
-		return {
-			body: {
-				todos: []
-			}
-		};
-	}
-
-	if (response.status === 200) {
-		return {
-			body: {
-				todos: await response.json()
-			}
-		};
-	}
-
+	const todos = await prisma.todo.findMany({});
 	return {
-		status: response.status
+		body: {
+			todos
+		}
 	};
 };
 
 export const post: RequestHandler = async ({ request, locals }) => {
 	const form = await request.formData();
 
-	await api('post', `todos/${locals.userid}`, {
-		text: form.get('text')
-	});
+	await prisma.todo.create({ data: { done: false, text: form.get('text') as string } });
 
 	return {};
 };
@@ -50,9 +31,12 @@ const redirect = {
 export const patch: RequestHandler = async ({ request, locals }) => {
 	const form = await request.formData();
 
-	await api('patch', `todos/${locals.userid}/${form.get('uid')}`, {
-		text: form.has('text') ? form.get('text') : undefined,
-		done: form.has('done') ? !!form.get('done') : undefined
+	await prisma.todo.update({
+		where: { id: parseInt(form.get('id') as string) },
+		data: {
+			text: form.has('text') ? (form.get('text') as string) : undefined,
+			done: form.has('done') ? !!form.get('done') : undefined
+		}
 	});
 
 	return redirect;
@@ -61,7 +45,7 @@ export const patch: RequestHandler = async ({ request, locals }) => {
 export const del: RequestHandler = async ({ request, locals }) => {
 	const form = await request.formData();
 
-	await api('delete', `todos/${locals.userid}/${form.get('uid')}`);
+	await prisma.todo.delete({ where: { id: parseInt(form.get('id') as string) } });
 
 	return redirect;
 };
