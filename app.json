@@ -8,6 +8,6 @@
       "predeploy": "npm run migrate"
     }
   },
-  "image": "parkerbedlan/sveltekit-prisma-template",
+  "image": "<dockerhub-username>/<app-name>",
   "addons": ["dokku-postgres"]
 }
