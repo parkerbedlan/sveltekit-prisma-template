@@ -1,5 +1,5 @@
 {
-  "name": "Sveltekit with Prisma Template",
+  "name": "SvelteKit with Prisma Template",
   "description": "Template for integrating and deploying SvelteKit apps with Prisma",
   "keywords": ["nodejs", "svelte", "sveltekit", "prisma"],
   "repository": "https://github.com/parkerbedlan/sveltekit-prisma-template",
@@ -8,6 +8,6 @@
       "predeploy": "npm run migrate"
     }
   },
-  "image": "<dockerhub-username>/<app-name>",
+  "image": "<dockerhub-username>/<repo-name>",
   "addons": ["dokku-postgres"]
 }
