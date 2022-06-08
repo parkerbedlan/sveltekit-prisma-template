@@ -7,6 +7,7 @@
 3. Create an empty file called `.env.production`
 4. `npm i`
 5. `npx prisma generate` and `npx prisma migrate dev`
+6. `npm run dev`
 
 #### Steps to deploy:
 ##### Setting up the server:
