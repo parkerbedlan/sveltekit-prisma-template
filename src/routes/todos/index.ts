@@ -1,7 +1,14 @@
 import type { RequestHandler } from './__types';
-import { prisma } from '$lib/db/prisma-client';
+// import { prisma } from '$lib/db/prisma-client';
+
+const lazyPrismaLoader = async () => {
+	const { PrismaClient } = await import('@prisma/client');
+	const prisma = new PrismaClient();
+	return prisma;
+};
 
 export const get: RequestHandler = async () => {
+	const prisma = await lazyPrismaLoader();
 	const todos = await prisma.todo.findMany({});
 	return {
 		body: {
@@ -13,6 +20,7 @@ export const get: RequestHandler = async () => {
 export const post: RequestHandler = async ({ request }) => {
 	const form = await request.formData();
 
+	const prisma = await lazyPrismaLoader();
 	await prisma.todo.create({ data: { done: false, text: form.get('text') as string } });
 
 	return {};
@@ -30,6 +38,7 @@ const redirect = {
 export const patch: RequestHandler = async ({ request }) => {
 	const form = await request.formData();
 
+	const prisma = await lazyPrismaLoader();
 	await prisma.todo.update({
 		where: { id: parseInt(form.get('id') as string) },
 		data: {
@@ -44,6 +53,7 @@ export const patch: RequestHandler = async ({ request }) => {
 export const del: RequestHandler = async ({ request }) => {
 	const form = await request.formData();
 
+	const prisma = await lazyPrismaLoader();
 	await prisma.todo.delete({ where: { id: parseInt(form.get('id') as string) } });
 
 	return redirect;
