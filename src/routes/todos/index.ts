@@ -1,8 +1,7 @@
-import { api } from './_api';
 import type { RequestHandler } from './__types';
 import { prisma } from '$lib/db/prisma-client';
 
-export const get: RequestHandler = async ({ locals }) => {
+export const get: RequestHandler = async () => {
 	const todos = await prisma.todo.findMany({});
 	return {
 		body: {
@@ -11,7 +10,7 @@ export const get: RequestHandler = async ({ locals }) => {
 	};
 };
 
-export const post: RequestHandler = async ({ request, locals }) => {
+export const post: RequestHandler = async ({ request }) => {
 	const form = await request.formData();
 
 	await prisma.todo.create({ data: { done: false, text: form.get('text') as string } });
@@ -28,7 +27,7 @@ const redirect = {
 	}
 };
 
-export const patch: RequestHandler = async ({ request, locals }) => {
+export const patch: RequestHandler = async ({ request }) => {
 	const form = await request.formData();
 
 	await prisma.todo.update({
@@ -42,7 +41,7 @@ export const patch: RequestHandler = async ({ request, locals }) => {
 	return redirect;
 };
 
-export const del: RequestHandler = async ({ request, locals }) => {
+export const del: RequestHandler = async ({ request }) => {
 	const form = await request.formData();
 
 	await prisma.todo.delete({ where: { id: parseInt(form.get('id') as string) } });
